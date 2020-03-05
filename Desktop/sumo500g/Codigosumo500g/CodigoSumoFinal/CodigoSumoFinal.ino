@@ -14,9 +14,11 @@
 //
 //                                
 //=============================================================================
-int L=0,R=0;
-
-
+int L=0,R=0,i=0;
+#include <SharpIR.h>
+#define ir PA5
+#define model 1080
+SharpIR SharpIR(ir, model); 
 void setup()
 {
   Serial.begin(9600);
@@ -29,7 +31,8 @@ void setup()
  pinMode(PB1,INPUT);//Left IF
  pinMode(PA7,INPUT);//Right G
  pinMode(PA6,INPUT);//Left G
-
+ pinMode(ir,INPUT);//IF 
+ delay(3000);
 }
 void Stop()
 {
@@ -40,51 +43,59 @@ void Stop()
   }
 void motorF()
 {
-  digitalWrite(PB9,LOW);
+  digitalWrite(PB9, HIGH);
  digitalWrite(PB8,LOW );
- digitalWrite(PB7,HIGH);
+ digitalWrite(PB7, LOW);
  digitalWrite(PB6 ,HIGH);
 }
 void motorB()
 {
-  digitalWrite(PB9,HIGH);
+   digitalWrite(PB9, LOW);
  digitalWrite(PB8,HIGH );
- digitalWrite(PB7,LOW);
+ digitalWrite(PB7,HIGH);
  digitalWrite(PB6 ,LOW);
 }
 void motorL()
 {
- digitalWrite(PB9,LOW);
- digitalWrite(PB8,HIGH );
- digitalWrite(PB7,LOW);
- digitalWrite(PB6 ,HIGH);
-}
-void motorR()
-{
- digitalWrite(PB9, HIGH);
+ digitalWrite(PB9,HIGH);
  digitalWrite(PB8,LOW );
  digitalWrite(PB7,HIGH);
  digitalWrite(PB6 ,LOW);
+}
+void motorR()
+{
+ digitalWrite(PB9, LOW);
+ digitalWrite(PB8,HIGH );
+ digitalWrite(PB7,LOW);
+ digitalWrite(PB6 ,HIGH);
 
 }
 
 void loop(){
-  L = digitalRead(PA7);
-  R = digitalRead(PA6);
-//  Serial.println(L);
-//   Serial.println(R);
- //   digitalWrite(PB9,LOW);
-// digitalWrite(PB8,HIGH );
-// digitalWrite(PB7,HIGH);
-// digitalWrite(PB6 ,LOW);
-if(L==1 && R==1)  
-motorF();
-else if(L==0 && R==1)
-motorL(); 
-else if(L==1 && R==0)
-motorR();
-else if(L==0 && R==0)
-Stop();
+  
+  L = digitalRead(PA6);
+  R = digitalRead(PA7);
+  //int distancia = SharpIR.distance();
+  if(R==1&& L==1) { 
+  Stop();  
+motorF();}
+else if(R!=1&& L==1){
+ Stop();
+ motorL();
+ }
+else if(R==1&& L!=1){
+ Stop();
+ motorR();
+ }
+ else if(R==0&& L==0){
+ Stop();
+ motorB();
+ delay(500);
+  Stop();
+ motorL();
+ delay(500);
+ }
+ else  Stop();
 
 
 
